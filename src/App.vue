@@ -87,7 +87,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="green" dark>
+    <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="#215027" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <div class="d-flex align-center">
         <v-img
