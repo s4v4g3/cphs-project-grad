@@ -18,7 +18,7 @@
                     <v-card-actions>
                         <v-btn text>{{item.price}}</v-btn>
 
-                        <v-btn color="purple" text>Add to Cart</v-btn>
+                        <v-btn color="purple" text @click.stop="dialog = true">Add to Cart</v-btn>
 
                         <v-spacer></v-spacer>
 
@@ -29,6 +29,32 @@
                 </v-card>
             </v-col>
         </v-row>
+        <v-dialog
+      v-model="dialog"
+      max-width="320"
+    >
+      <v-card>
+        <v-card-title class="headline">Sorry, we're not open yet!</v-card-title>
+
+        <v-card-text>
+          We're not quite ready to sell you anything just yet.  Please check back with us in a bit!
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialog = false"
+          >
+            Okay
+          </v-btn>
+
+          
+        </v-card-actions>
+      </v-card>
+        </v-dialog>
     </v-container>
 </template>
 <script>
@@ -36,6 +62,7 @@ export default {
     name: "store",
     components: {},
     data: () => ({
+        dialog: false,
         items: [
             {
                 name: "T-Shirts",
