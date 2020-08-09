@@ -30,20 +30,18 @@
                 <v-col class="mb-4">
                     <h1>Email</h1>
                     <h2>
-                        <a href="mailto:CPHSProjectGrad2021@gmail.com">CPHSProjectGrad2020@gmail.com</a>
+                        <a href="mailto:CPHSProjGrad2021@gmail.com">CPHSProjGrad2021@gmail.com</a>
                     </h2>
                     <br/>
                     <h1>Facebook</h1>
                     <h2>
-                        <a href="https://www.facebook.com/CPHSProjectGrad2020/">@cphsprojectgrad2020</a>
+                        <a href="https://www.facebook.com/CPHSprojectgraduation2021/">@cphsprojectgraduation2021</a>
                     </h2>
                     </v-col>
                 <v-col class="mb-4">
                     <h1>Instagram</h1>
                     <h2>
-                        <a
-                            href="https://www.instagram.com/cphsprojectgrad2020/"
-                        >@cphsprojectgrad2020</a>
+                        <a href="https://www.instagram.com/cphsprojgrad2021/">@cphsprojectgrad2021</a>
                     </h2>
                     <br/>
                     <h1>Mailing Address</h1>
@@ -65,13 +63,19 @@ export default {
     components: {},
     data: () => ({
         officers: [
-            "Elizabeth Schroeder",
-            "Elizabeth Hunter",
-            "Christi Cooper",
-            "Kristi Lavine",
-            "Sandra King",
-            "Heather Meyer",
-            "Della Robinson"
+            "Darren McDaniel",
+            "Katie Cole",
+            "Debi Adamski",
+            "Ray Mungia",
+            "Nikki Cheek",
+            "Renee Savage",
+            "Travis Williamson",
+            "Dawn Pannell",
+            "Heather Claybrook",
+            "Tracy Smith",
+            "Erica Hynds",
+            "Brianna Darcey",
+            "Tricia Motz"
         ]
     })
 };

@@ -10,6 +10,11 @@
           <h1 class="display-2 font-weight-bold mb-3">Welcome to Project Grad 2021!</h1>
           <h2>Celebrating and Honoring CPHS Seniors in the class of 2021</h2>
 
+            <router-link to="/DonateNow">
+    <v-img :src="require('../assets/Donate_Button_Transparent3.jpg')" class="my-3" contain height="400" />
+</router-link>
+            
+
           <p class="subheading font-weight-regular">
             
             
