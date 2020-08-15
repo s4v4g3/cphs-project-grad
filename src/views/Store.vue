@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-row class="text-center">
                 <v-col class="mb-4" cols="12">
                     <h2 class="display-2  mb-2">Store will be online soon!</h2>
@@ -7,7 +7,7 @@
                 </v-col>
             </v-row>
         <v-row>
-            <v-col v-for="(item,i) in items" :key="i" cols="6">
+            <v-col v-for="(item,i) in items" :key="i" :cols="12/itemsPerRow">
                 <v-card class="mx-auto" max-width="500">
                     <v-img v-if="item.src.length == 1" :src="item.src[0]" :height="item.height"></v-img>
                     <v-carousel v-else
@@ -127,6 +127,13 @@ export default {
                 price: "$39.99"
             }
         ]
-    })
+    }),
+    computed: {
+        itemsPerRow: function() {
+            return this.$vuetify.breakpoint.width > 1000 ? 2 : 1
+        }
+    }
 };
 </script>
+<style lang="scss">
+</style>
