@@ -7,9 +7,23 @@
                 </v-col>
             </v-row>
         <v-row>
-            <v-col v-for="(item,i) in items" :key="i">
+            <v-col v-for="(item,i) in items" :key="i" cols="6">
                 <v-card class="mx-auto" max-width="500">
-                    <v-img :src="item.src" ></v-img>
+                    <v-img v-if="item.src.length == 1" :src="item.src[0]" :height="item.height"></v-img>
+                    <v-carousel v-else
+                        :cycle="false"
+                        :height="item.height"
+                        :hide-delimiter-background="true"
+                        show-arrows-on-hover
+                    >
+                    <v-carousel-item
+                        v-for="(image,i) in item.src"
+                        :key="i"
+                        :src="image"
+                        reverse-transition="fade-transition"
+                        transition="fade-transition"
+                        ></v-carousel-item>
+                    </v-carousel>
 
                     <v-card-title>{{item.name}}</v-card-title>
 
@@ -22,7 +36,7 @@
 
                         <v-spacer></v-spacer>
 
-                        <v-btn icon @click="show = !show">
+                        <v-btn v-if="false" icon @click="show = !show">
                             <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                         </v-btn>
                     </v-card-actions>
@@ -63,30 +77,53 @@ export default {
     components: {},
     data: () => ({
         dialog: false,
+        show: false,
         items: [
             {
                 name: "T-Shirts",
-                subtitle: "Sizes: S, M, L, XL, XXL, and XXXL",
-                src: require("../assets/t_shirt.jpg"),
+                subtitle: "Available in White, Teal, Grey, Pink, and Timberwolf Green",
+                src: [require("../assets/white_t_shirt.png"), 
+                    require("../assets/pink_t_shirt.png"),
+                    require("../assets/grey_t_shirt.png"),
+                    require("../assets/green_t_shirt.png"),
+                    require("../assets/teal_t_shirt.png")
+                    ],
+                height: 800,
                 price: "$19.99"
             },
             {
-                name: "Yard Signs",
-                subtitle: "Toilet Paper Not Included",
-                src: require("../assets/yard_sign.jpg"),
-                price: "$39.99"
-            }
-            ,
-            {
                 name: "Bricks",
-                subtitle: "Build yourself a brick house",
-                src: require("../assets/brick.jpg"),
+                subtitle: "Secure your place in history",
+                src: [require("../assets/brick.jpg")],
+                height: 800,
                 price: "$39.99"
             },
             {
-                name: "Face Masks",
-                subtitle: "Protect yourself from COVID",
-                src: require("../assets/facemask.jpg"),
+                name: "Yard Signs",
+                subtitle: "Show off your school spirit to your neighbors",
+                src: [require("../assets/yard_sign_2021.jpg")],
+                height: 400,
+                price: "$39.99"
+            },
+            {
+                name: "Timberwolf Flag",
+                subtitle: "Pool not included",
+                src: [require("../assets/flag.jpg")],
+                height: 400,
+                price: "$39.99"
+            },
+            {
+                name: "Timberwolf Face Masks",
+                subtitle: "Available with large or small logo",
+                src: [require("../assets/face_mask_1.png"), require("../assets/face_mask_2.png")],
+                height: 400,
+                price: "$39.99"
+            },
+            {
+                name: "Timberwolf Gator",
+                subtitle: "Available in Green or Camo",
+                src: [require("../assets/gator_1.png"), require("../assets/gator_2.png")],
+                height: 400,
                 price: "$39.99"
             }
         ]

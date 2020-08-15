@@ -127,6 +127,7 @@ export default {
 
   data: () => ({
     drawer: null,
+    miniVariant: false,
     links: [
       {
         text: "About Us",
