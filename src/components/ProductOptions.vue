@@ -13,7 +13,7 @@
                     ></v-combobox>
                     <v-text-field
                     v-if="option.type=='Text'"
-                        :label="option.name"
+                        v-bind:label="getTextOptionLabel(option)"
                         v-model="selectedOptions[i].value"
           ></v-text-field>
                 </div>
@@ -58,6 +58,9 @@ export default {
         getSelectionLabel(optionName) {
             return `Select a ${optionName}`;
         },
+        getTextOptionLabel(option) {
+            return `${option.name} (${option.charLimit} chars max)`
+        },
         close() {
             this.$emit("input", false);
             this.initializeOptions();
@@ -71,8 +74,12 @@ export default {
     computed: {
         allOptionsSelected() {
             let allSelected = true;
-            this.selectedOptions.forEach(opt => {
-                if (opt === null) allSelected = false;
+            this.selectedOptions.forEach((opt,i) => {
+                if (opt.value === null || opt.value === '') {
+                    allSelected = false;
+                } else if (this.item.product.availableOptions[i].type === 'Text' && opt.value.length > this.item.product.availableOptions[i].charLimit) {
+                    allSelected = false;
+                }
             });
             return allSelected;
         }
