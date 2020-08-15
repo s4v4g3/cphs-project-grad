@@ -13,19 +13,7 @@
                 
             </v-col>
         </v-row>
-        <v-dialog v-model="dialog" max-width="320">
-            <v-card>
-                <v-card-title class="headline">Sorry, we're not open yet!</v-card-title>
-
-                <v-card-text>We're not quite ready to sell you anything just yet. Please check back with us in a bit!</v-card-text>
-
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn color="green darken-1" text @click="dialog = false">Okay</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+        
     </v-container>
 </template>
 <script>

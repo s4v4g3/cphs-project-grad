@@ -9,7 +9,7 @@ export default new Vuex.Store({
             {
                 id: 1000,
                 name: 't-shirt',
-                displayName: "T-Shirts",
+                displayName: "T-Shirt",
                 caption: "Available in White, Teal, Grey, Pink, and Timberwolf Green",
                 price: '25',
                 images: [
@@ -19,13 +19,15 @@ export default new Vuex.Store({
                     require("./assets/green_t_shirt.png"),
                     require("./assets/teal_t_shirt.png")
                 ],
-                options: [
+                availableOptions: [
                     {
                         name: "Color",
+                        type: "Selection",
                         options: ["Green", "Pink", "Grey", "White", "Teal"]
                     },
                     {
                         name: "Size",
+                        type: "Selection",
                         options: ["S", "M", "L", "XL", "XXL", "XXXL"]
                     }
                 ]
@@ -37,7 +39,24 @@ export default new Vuex.Store({
                 caption: "Secure your place in history",
                 price: '50',
                 images: [require("./assets/brick.jpg")],
-                options: []
+                availableOptions: [
+                    {
+                        name: "Text Line 1",
+                        type: "Text",
+                        charLimit: 20
+                    },
+                    {
+                        name: "Text Line 2",
+                        type: "Text",
+                        charLimit: 20
+                    }
+                    ,
+                    {
+                        name: "Text Line 3",
+                        type: "Text",
+                        charLimit: 20
+                    }
+                ]
             },
             {
                 id: 1003,
@@ -46,28 +65,28 @@ export default new Vuex.Store({
                 caption: "Show off your school spirit to your neighbors",
                 price: '25',
                 images: [require("./assets/yard_sign_2021.jpg")],
-                options: []
+                availableOptions: []
             },
             {
                 id: 1004,
                 name: 'flag',
                 displayName: "Timberwolf Flag",
                 caption: "Pool not included",
-                
                 price: '20',
                 images: [require("./assets/flag.jpg")],
-                options: []
+                availableOptions: []
             },
             {
                 id: 1005,
                 name: 'facemask',
-                displayName: "Timberwolf Face Masks",
+                displayName: "Timberwolf Face Mask",
                 caption: "Available with large or small logo",
                 price: '10',
                 images: [require("./assets/face_mask_1.png"),
                 require("./assets/face_mask_2.png")],
-                options: [{
+                availableOptions: [{
                     name: "Style",
+                    type: "Selection",
                     options: ["Large Logo", "Small Logo"]
                 }]
             },
@@ -79,8 +98,9 @@ export default new Vuex.Store({
                 price: '10',
                 images: [require("./assets/gator_1.png"),
                 require("./assets/gator_2.png")],
-                options: [{
+                availableOptions: [{
                     name: "Color",
+                    type: "Selection",
                     options: ["Green", "Camo"]
                 }]
             },
