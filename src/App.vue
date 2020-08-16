@@ -112,6 +112,7 @@
         </v-app-bar>
 
         <v-content>
+            <v-snackbar v-model="snackbar" :timeout="4000" :top="true">{{nameOfLastProductAdded}} Added to Cart!</v-snackbar>
             <router-view></router-view>
         </v-content>
 
@@ -119,33 +120,24 @@
             <span>&copy; 2020</span>
         </v-footer>
         
-        <v-dialog v-model="getPopupCart" max-width="320">
-            <v-card>
-                <v-card-title class="headline">Sorry, we're not open yet!</v-card-title>
-
-                <v-card-text>We're not quite ready to sell you anything just yet. Please check back with us in a bit!</v-card-text>
-
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn color="green darken-1" text @click="showPopupCart()">Okay</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+        <cart v-model="showCart" />
 
     </v-app>
 </template>
 <script>
 import btn from "./components/Btn";
+import cart from "./components/Cart"
 import { mapGetters, mapActions } from "vuex";
 export default {
     name: "App",
 
-    components: { btn },
+    components: { btn, cart },
 
     data: () => ({
         drawer: null,
         miniVariant: false,
+        showCart: false,
+        snackbar: false,
         links: [
             {
                 text: "About Us",
@@ -161,18 +153,42 @@ export default {
             }
         ]
     }),
+    watch: {
+        productAdded: function(newValue) {
+            window.console.log("watch productAdded!")
+            if (newValue) {
+                this.snackbar = true
+                this.acknowledgeProductAdded()
+            }
+        }
+    },
     methods: {
-        ...mapActions(["showOrHidePopupCart"]),
+        ...mapActions(["acknowledgeProductAdded"]),
         hasProduct() {
             return this.getProductsInCart.length > 0;
         },
         showPopupCart() {
             window.console.log("showPopupCart!");
-            this.showOrHidePopupCart();
+            this.showCart = true;
+            this.getProductsInCart.forEach(item => {
+                let product = this.getProducts.find(product => product.id == item.id)
+                window.console.log(product.name)
+                item.selectedOptions.forEach(opt => {
+                    window.console.log(`${opt.name}: ${opt.value}`)
+                })
+                
+            })
         }
+        
     },
     computed: {
-        ...mapGetters(["getProductsInCart", "getPopupCart"])
+        ...mapGetters(["getProductsInCart", "getPopupCart", "getProducts", "onProductAdded", "getNameOfLastProductAdded"]),
+        productAdded: function() {
+            return this.onProductAdded
+        },
+        nameOfLastProductAdded: function() {
+            return this.getNameOfLastProductAdded
+        }
     }
 };
 </script>

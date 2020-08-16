@@ -1,17 +1,94 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
+function getProductPrice(state, pid) {
+    return state.products.find(item => item.id == pid).price
+}
+
+function getProductName(state, pid) {
+    return state.products.find(item => item.id == pid).displayName
+}
+
+function getSubtotal(state) {
+    let subtotal = state.cartProducts.reduce(
+        (current, next) => current + getProductPrice(state, next.id),
+        0
+    );
+    return subtotal
+}
+
+function getTotalPrice(state) {
+    let subtotal = getSubtotal(state)
+    let discount = getBundleDiscountAndBonus(state).discount
+    return subtotal - discount
+}
+
+function getBundleDiscountAndBonus(state) {
+    
+    let discount = 0
+    let bonuses = []
+    let awards = []
+    let cartItemIds = state.cartProducts.map(item => item.id)
+    let bundleFound = true
+    while(bundleFound) {
+        bundleFound = false
+        state.bundles.forEach(bundle => {
+            if (bundle.items.every(elem => cartItemIds.indexOf(elem) > -1)) {
+                bundleFound = true
+                awards.push({
+                    discount: bundle.discount,
+                    bonus: bundle.bonus,
+                    name: bundle.name
+                })
+                discount += bundle.discount
+                if (bundle.bonus != null)  bonuses.push(bundle.bonus)
+                // remove items from cartItemIds
+                bundle.items.forEach(item => {
+                    const index = cartItemIds.indexOf(item)
+                    cartItemIds.splice(index, 1)
+                })
+            }
+        })
+        if (!bundleFound) { break }
+    }
+    let award = {
+        discount: discount,
+        bonuses: bonuses,
+        awards: awards
+    }
+    return award
+}
+
 export default new Vuex.Store({
+    plugins: [createPersistedState(
+        {paths:["cartProducts"]}
+    )],
     state: {
+        bundles: [
+            {
+                name: "Super Senior Tile Bonus",
+                items: [1000, 1003, 1005, 1006, 1001],
+                discount: 20,
+                bonus: 'Bonus Tile'
+            },
+            {
+                name: "Senior Bundle",
+                items: [1000, 1003, 1005, 1006],
+                discount: 20,
+                bonus: null
+            }
+            
+        ],
         products: [
             {
                 id: 1000,
                 name: 't-shirt',
                 displayName: "T-Shirt",
                 caption: "Available in White, Teal, Grey, Pink, and Timberwolf Green",
-                price: '25',
+                price: 25,
                 images: [
                     require("./assets/white_t_shirt.png"),
                     require("./assets/pink_t_shirt.png"),
@@ -19,6 +96,7 @@ export default new Vuex.Store({
                     require("./assets/green_t_shirt.png"),
                     require("./assets/teal_t_shirt.png")
                 ],
+                imageHeight: 800,
                 availableOptions: [
                     {
                         name: "Color",
@@ -35,10 +113,11 @@ export default new Vuex.Store({
             {
                 id: 1001,
                 name: 'brick',
-                displayName: "Commemorative Bricks",
+                displayName: "Commemorative Brick",
                 caption: "Secure your place in history",
-                price: '50',
+                price: 50,
                 images: [require("./assets/brick.jpg")],
+                imageHeight: 800,
                 availableOptions: [
                     {
                         name: "Text Line 1",
@@ -61,10 +140,11 @@ export default new Vuex.Store({
             {
                 id: 1003,
                 name: 'yardsign',
-                displayName: "Yard Signs",
+                displayName: "Yard Sign",
                 caption: "Show off your school spirit to your neighbors",
-                price: '25',
+                price: 25,
                 images: [require("./assets/yard_sign_2021.jpg")],
+                imageHeight: 400,
                 availableOptions: []
             },
             {
@@ -72,8 +152,9 @@ export default new Vuex.Store({
                 name: 'flag',
                 displayName: "Timberwolf Flag",
                 caption: "Pool not included",
-                price: '20',
+                price: 20,
                 images: [require("./assets/flag.jpg")],
+                imageHeight: 400,
                 availableOptions: []
             },
             {
@@ -81,9 +162,10 @@ export default new Vuex.Store({
                 name: 'facemask',
                 displayName: "Timberwolf Face Mask",
                 caption: "Available with large or small logo",
-                price: '10',
+                price: 10,
                 images: [require("./assets/face_mask_1.png"),
                 require("./assets/face_mask_2.png")],
+                imageHeight: 400,
                 availableOptions: [{
                     name: "Style",
                     type: "Selection",
@@ -95,9 +177,10 @@ export default new Vuex.Store({
                 name: 'gaiter',
                 displayName: "Timberwolf Gaiter",
                 caption: "Available in Green or Camo",
-                price: '10',
+                price: 10,
                 images: [require("./assets/gator_1.png"),
                 require("./assets/gator_2.png")],
+                imageHeight: 400,
                 availableOptions: [{
                     name: "Color",
                     type: "Selection",
@@ -108,23 +191,26 @@ export default new Vuex.Store({
 
         cartProducts: [],
         currentProduct: {},
-        showModal: false,
-        showPopupCart: false,
+        triggerProductAdded: false,
+        nameOfLastProductAdded: ''
     },
 
     getters: {
         getProducts: state => state.products,
-        getSmartphones: state => state.smartphones,
-        getAllProducts: state => state.notebooks.concat(state.smartphones),
         getProductsInCart: state => state.cartProducts,
         getCurrentProduct: state => state.currentProduct,
-        getShowModal: state => state.showModal,
-        getPopupCart: state => state.showPopupCart,
+        getTotalPrice: state => getTotalPrice(state),
+        getSubtotal: state => getSubtotal(state),
+        getBundleDiscountAndBonus: state => getBundleDiscountAndBonus(state),
+        onProductAdded: state => state.triggerProductAdded,
+        getNameOfLastProductAdded: state => state.nameOfLastProductAdded
     },
 
     mutations: {
         ADD_PRODUCT: (state, product) => {
             state.cartProducts.push(product);
+            state.triggerProductAdded = true
+            state.nameOfLastProductAdded = getProductName(state, product.id)
         },
         REMOVE_PRODUCT: (state, index) => {
             state.cartProducts.splice(index, 1);
@@ -132,12 +218,9 @@ export default new Vuex.Store({
         CURRENT_PRODUCT: (state, product) => {
             state.currentProduct = product;
         },
-        SHOW_MODAL: (state) => {
-            state.showModal = !state.showModal;
-        },
-        SHOW_POPUP_CART: (state) => {
-            state.showPopupCart = !state.showPopupCart;
-        },
+        ACKNOWLEDGE_PRODUCT_ADDED: (state) => {
+            state.triggerProductAdded = false
+        }
     },
 
     actions: {
@@ -150,11 +233,8 @@ export default new Vuex.Store({
         currentProduct: (context, product) => {
             context.commit('CURRENT_PRODUCT', product);
         },
-        showOrHiddenModal: (context) => {
-            context.commit('SHOW_MODAL');
-        },
-        showOrHidePopupCart: (context) => {
-            context.commit('SHOW_POPUP_CART');
+        acknowledgeProductAdded: (context) => {
+            context.commit('ACKNOWLEDGE_PRODUCT_ADDED');
         },
     },
 });

@@ -9,7 +9,7 @@
         <v-row>
             
             <v-col v-for="(item,i) in items" :key="i" :cols="12/itemsPerRow">
-                <product :item="item" />
+                <product :item="item.product" />
                 
             </v-col>
         </v-row>
@@ -31,27 +31,21 @@ export default {
         this.items = [
             {
                 product: this.getProductByName("t-shirt"),
-                height: 800
             },
             {
                 product: this.getProductByName("brick"),
-                height: 800
             },
             {
                 product: this.getProductByName("yardsign"),
-                height: 400
             },
             {
                 product: this.getProductByName("flag"),
-                height: 400
             },
             {
                 product: this.getProductByName("facemask"),
-                height: 400
             },
             {
                 product: this.getProductByName("gaiter"),
-                height: 400
             }
         ];
     },
