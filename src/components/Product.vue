@@ -8,6 +8,7 @@
                 v-if="item.images.length == 1"
                 :src="item.images[0]"
                 :height="item.imageHeight"
+                contain
                 @click="imageClick(item)"
             ></v-img>
             <v-carousel
@@ -22,6 +23,7 @@
                     :key="i"
                     :src="image"
                     reverse-transition="fade-transition"
+                    contain
                     transition="fade-transition"
                     @click="imageClick(item)"
                 ></v-carousel-item>
@@ -32,7 +34,7 @@
             <v-card-subtitle>{{item.caption}}</v-card-subtitle>
 
             <v-card-actions>
-                <v-btn text>${{item.price}}</v-btn>
+                <v-btn v-if="item.price > 0" text>${{item.price}}</v-btn>
 
                 <v-btn
                     v-if="item.availableOptions.length"

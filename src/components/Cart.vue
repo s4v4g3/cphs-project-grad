@@ -27,39 +27,59 @@
                                         >{{ option.name }}: {{ option.value }}</p>
                                     </v-col>
                                     <v-col :cols="3">
-                                        <span class="item-price">$ {{ item.product.price }}.00</span>
+                                        <span class="item-price">$ {{ getItemPrice(item) }}.00</span>
                                     </v-col>
                                     <v-col :cols="1">
-                                        <v-btn color="red darken-1" @click="removeItem(index)" text>Remove</v-btn>
+                                        <v-btn
+                                            color="red darken-1"
+                                            @click="removeItem(index)"
+                                            text
+                                        >Remove</v-btn>
                                     </v-col>
                                 </v-row>
                             </v-card>
                             <br />
                         </div>
                     </v-container>
-                    <v-card-title v-if="showBonus">
-                        <v-container>
-                            <v-row>
-                               <v-col :cols="5">
-                                    <span class="headline">Bundle Discount</span>
-                                </v-col>
-                                <v-col :cols="2" :offset="5">
-                                    <span class="headline">{{bundleDiscount()}}</span>
-                                </v-col>
-                            </v-row>
-                        </v-container>
-                    </v-card-title>
+                    <v-list-item v-if="showDiscount">
+                        <v-row v-if="showDiscount">
+                            <v-col :cols="5">
+                                <span>Subtotal</span>
+                            </v-col>
+                            <v-col :cols="2" :offset="5">
+                                <span>{{subtotal()}}</span>
+                            </v-col>
+                        </v-row>
+                    </v-list-item>
+                    <v-list-item v-if="showDiscount">
+                        <v-row v-if="showDiscount">
+                            <v-col :cols="5">
+                                <span>Bundle Discount</span>
+                            </v-col>
+                            <v-col :cols="2" :offset="5" color="red">({{bundleDiscount()}})
+                                <span color="red"></span>
+                            </v-col>
+                        </v-row>
+                    </v-list-item>
+                    <v-list-item v-if="showBonusItems">
+                        <v-row >
+                            <v-col :cols="5">
+                                <span>Bonus Items</span>
+                            </v-col>
+                            <v-col :cols="2" :offset="5" >
+                                <span >{{getBonusItemText()}}</span>
+                            </v-col>
+                        </v-row>
+                    </v-list-item>
                     <v-card-title>
-                        <v-container>
-                            <v-row>
-                                <v-col :cols="5">
-                                    <span class="headline">Total Price:</span>
-                                </v-col>
-                                <v-col :cols="2" :offset="5">
-                                    <span class="headline">{{totalPrice()}}</span>
-                                </v-col>
-                            </v-row>
-                        </v-container>
+                        <v-row>
+                            <v-col :cols="5">
+                                <span>Total Price:</span>
+                            </v-col>
+                            <v-col :cols="2" :offset="5">
+                                <span>{{totalPrice()}}</span>
+                            </v-col>
+                        </v-row>
                     </v-card-title>
                 </div>
                 <v-card-actions>
@@ -77,12 +97,9 @@
         <v-dialog v-model="showCheckoutMessage" max-width="320">
             <v-card>
                 <v-card-title class="headline">Sorry, we're not open yet!</v-card-title>
-
                 <v-card-text>We're not quite ready to sell you anything just yet. Please check back with us in a bit!</v-card-text>
-
                 <v-card-actions>
                     <v-spacer></v-spacer>
-
                     <v-btn color="green darken-1" text @click="showCheckoutMessage = false">Okay</v-btn>
                 </v-card-actions>
             </v-card>
@@ -113,7 +130,7 @@ export default {
     methods: {
         ...mapActions(["addProduct", "showOrHiddenModal", "removeProduct"]),
         checkout() {
-            this.showCheckoutMessage = true
+            this.showCheckoutMessage = true;
         },
         close() {
             this.displayed = false;
@@ -122,43 +139,79 @@ export default {
         hasProduct() {
             return this.cartContents.length > 0;
         },
-        
-        bundleDiscount () {
-            let award = this.getBundleDiscountAndBonus
-            return '$' + `${award.discount}`
+        subtotal() {
+            let price = this.getSubtotal;
+            return "$" + `${price}`;
+        },
+        bundleDiscount() {
+            let award = this.getBundleDiscountAndBonus;
+            return "$" + `${award.discount}`;
         },
         totalPrice() {
-            let price = this.getTotalPrice
-            window.console.log(price)
-            return '$' + `${price}`
+            let price = this.getTotalPrice;
+            window.console.log(price);
+            return "$" + `${price}`;
+        },
+        getBonusItemText() {
+            let award = this.getBundleDiscountAndBonus;
+            window.console.log(award)
+            let text = "";
+            let items = {}
+            award.bonuses.forEach((bonus) => {
+                if (! (bonus in items)) {
+                    items[bonus] = 0
+                }
+                items[bonus] += 1
+            })
+            for (let item in items) {
+                if (text != "") {
+                    text += ", "
+                }
+                text = text + `${item} (${items[item]})`
+            }
+            return text
         },
         removeItem(index) {
             // index is the index into cartContents, which is sorted by name.
             // to get the index into the products in the vuex store, get the 'index'
             // property
-            let realIndex = this.cartContents[index].index
-            this.removeProduct(realIndex)
+            let realIndex = this.cartContents[index].index;
+            this.removeProduct(realIndex);
         },
         displayedChanged(value) {
             window.console.log("displayedChanged: " + value.toString());
             if (value == false) this.close();
+        },
+        getItemPrice(item) {
+            return this.$store.getters.getItemPrice(item);
         }
     },
     computed: {
-        ...mapGetters(["getProductsInCart", "getProducts", "getTotalPrice", "getSubtotal", "getBundleDiscountAndBonus"]),
-        showBonus: function() {
-            return this.getBundleDiscountAndBonus.awards.length > 0
+        ...mapGetters([
+            "getProductsInCart",
+            "getProducts",
+            "getTotalPrice",
+            "getSubtotal",
+            "getBundleDiscountAndBonus"
+        ]),
+        showDiscount: function() {
+            return this.getBundleDiscountAndBonus.awards.length > 0;
+        },
+        showBonusItems: function() {
+            return this.getBundleDiscountAndBonus.bonuses.length > 0;
         },
         cartContents: function() {
             return this.getProductsInCart
-                .map((item,i) => ({
+                .map((item, i) => ({
                     product: this.getProducts.find(
                         product => product.id == item.id
                     ),
+                    id: item.id,
                     selectedOptions: item.selectedOptions,
                     index: i
                 }))
                 .sort((a, b) => a.product.id - b.product.id);
-        }    }
+        }
+    }
 };
 </script>

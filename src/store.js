@@ -4,8 +4,17 @@ import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
-function getProductPrice(state, pid) {
-    return state.products.find(item => item.id == pid).price
+function getProductPrice(state, cartItem) {
+    window.console.log("state")
+    window.console.log(state)
+    window.console.log("cartItem:")
+    window.console.log(cartItem)
+    let price = state.products.find(item => item.id == cartItem.id).price
+    if (price == 0) {
+        // assume first option is price
+        price = cartItem.selectedOptions[0].value
+    }
+    return price
 }
 
 function getProductName(state, pid) {
@@ -14,7 +23,7 @@ function getProductName(state, pid) {
 
 function getSubtotal(state) {
     let subtotal = state.cartProducts.reduce(
-        (current, next) => current + getProductPrice(state, next.id),
+        (current, next) => current + getProductPrice(state, next),
         0
     );
     return subtotal
@@ -35,7 +44,9 @@ function getBundleDiscountAndBonus(state) {
     let bundleFound = true
     while(bundleFound) {
         bundleFound = false
-        state.bundles.forEach(bundle => {
+
+        for (let i=0; i<state.bundles.length; ++i) {
+            let bundle = state.bundles[i];
             if (bundle.items.every(elem => cartItemIds.indexOf(elem) > -1)) {
                 bundleFound = true
                 awards.push({
@@ -50,8 +61,9 @@ function getBundleDiscountAndBonus(state) {
                     const index = cartItemIds.indexOf(item)
                     cartItemIds.splice(index, 1)
                 })
+                break 
             }
-        })
+        }
         if (!bundleFound) { break }
     }
     let award = {
@@ -72,7 +84,7 @@ export default new Vuex.Store({
                 name: "Super Senior Tile Bonus",
                 items: [1000, 1003, 1005, 1006, 1001],
                 discount: 20,
-                bonus: 'Bonus Tile'
+                bonus: 'Granite Coaster'
             },
             {
                 name: "Senior Bundle",
@@ -86,7 +98,7 @@ export default new Vuex.Store({
             {
                 id: 1000,
                 name: 't-shirt',
-                displayName: "T-Shirt",
+                displayName: "Senior T-Shirt",
                 caption: "Available in White, Teal, Grey, Pink, and Timberwolf Green",
                 price: 25,
                 images: [
@@ -187,6 +199,32 @@ export default new Vuex.Store({
                     options: ["Green", "Camo"]
                 }]
             },
+            {
+                id: 1007,
+                name: 'jersey',
+                displayName: "Senior Jersey",
+                caption: "Only available until 8/25/2020!",
+                price: 25,
+                images: [require("./assets/jersey.jpg")],
+                imageHeight: 400,
+                availableOptions: []
+            },
+            {
+                id: 1008,
+                name: 'donation',
+                displayName: "Sponsor a Senior",
+                caption: "Make a donation to Project Graduation",
+                price: 0,
+                images: [require("./assets/Donate_Button_Transparent3.jpg")],
+                imageHeight: 400,
+                availableOptions: [{
+                    name: "Donation Amount",
+                    type: "NumericSlider",
+                    min: 5,
+                    max: 5000,
+                    options: [20,50,100,250,500,1000]
+                }]
+            },
         ],
 
         cartProducts: [],
@@ -199,6 +237,7 @@ export default new Vuex.Store({
         getProducts: state => state.products,
         getProductsInCart: state => state.cartProducts,
         getCurrentProduct: state => state.currentProduct,
+        getItemPrice: state => (item) => { return getProductPrice(state, item) },
         getTotalPrice: state => getTotalPrice(state),
         getSubtotal: state => getSubtotal(state),
         getBundleDiscountAndBonus: state => getBundleDiscountAndBonus(state),
