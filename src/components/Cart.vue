@@ -56,18 +56,19 @@
                             <v-col :cols="5">
                                 <span>Bundle Discount</span>
                             </v-col>
-                            <v-col :cols="2" :offset="5" color="red">({{bundleDiscount()}})
+                            <v-col :cols="2" :offset="5" color="red">
+                                ({{bundleDiscount()}})
                                 <span color="red"></span>
                             </v-col>
                         </v-row>
                     </v-list-item>
                     <v-list-item v-if="showBonusItems">
-                        <v-row >
+                        <v-row>
                             <v-col :cols="5">
                                 <span>Bonus Items</span>
                             </v-col>
-                            <v-col :cols="2" :offset="5" >
-                                <span >{{getBonusItemText()}}</span>
+                            <v-col :cols="2" :offset="5">
+                                <span>{{getBonusItemText()}}</span>
                             </v-col>
                         </v-row>
                     </v-list-item>
@@ -94,13 +95,17 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog v-model="showCheckoutMessage" max-width="320">
+        <v-dialog v-model="showCheckoutDisabledMessage" max-width="320">
             <v-card>
                 <v-card-title class="headline">Sorry, we're not open yet!</v-card-title>
                 <v-card-text>We're not quite ready to sell you anything just yet. Please check back with us in a bit!</v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" text @click="showCheckoutMessage = false">Okay</v-btn>
+                    <v-btn
+                        color="green darken-1"
+                        text
+                        @click="showCheckoutDisabledMessage = false"
+                    >Okay</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -108,18 +113,20 @@
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
-
+import doCheckout from "../checkout";
 export default {
     name: "cart",
     props: ["value"],
+    components: {},
     data: () => ({
         displayed: false,
-        showCheckoutMessage: false
+        showCheckoutDisabledMessage: false
     }),
     created() {},
     mounted() {
         window.console.log("Cart mounted!");
         this.displayed = this.value;
+        window.console.log(this.$router)
     },
     watch: {
         value: function(newValue) {
@@ -128,9 +135,40 @@ export default {
         }
     },
     methods: {
-        ...mapActions(["addProduct", "showOrHiddenModal", "removeProduct"]),
+        ...mapActions(["addProduct", "removeProduct", "setPendingCheckout"]),
         checkout() {
-            this.showCheckoutMessage = true;
+            let currentUrl = window.location.href
+            let routerPath = this.$router.currentRoute.fullPath
+            let redirectUrlBase = currentUrl.substring(0, currentUrl.length - routerPath.length)
+            let redirectUrl = redirectUrlBase + "/paymentConfirmation/" + this.getOrderKey
+            window.console.log(this.$router)
+            if (this.getEndpoint == "disabled") {
+                this.showCheckoutDisabledMessage = true;
+                return;
+            }
+            let checkoutPayload = this.getCheckoutPayload;
+            checkoutPayload.body.redirect_url = redirectUrl
+            window.console.log("checkout!");
+            window.console.log(checkoutPayload);
+            window.console.log(checkoutPayload.body.order.order.id);
+            window.console.log(checkoutPayload.body.redirect_url);
+
+            doCheckout(checkoutPayload)
+                .then(checkoutResult => {
+                    window.console.log("Received Server Result from checkout");
+                    window.console.log(checkoutResult);
+
+                    this.setPendingCheckout(checkoutResult);
+
+                    window.console.log(checkoutResult.checkout_page_url);
+
+                    // Navigate to checkout URL
+                    window.location = checkoutResult.checkout_page_url;
+                })
+                .catch(err => {
+                    // TODO: handle error
+                    window.console.log(err);
+                });
         },
         close() {
             this.displayed = false;
@@ -154,22 +192,22 @@ export default {
         },
         getBonusItemText() {
             let award = this.getBundleDiscountAndBonus;
-            window.console.log(award)
+            window.console.log(award);
             let text = "";
-            let items = {}
-            award.bonuses.forEach((bonus) => {
-                if (! (bonus in items)) {
-                    items[bonus] = 0
+            let items = {};
+            award.bonuses.forEach(bonus => {
+                if (!(bonus in items)) {
+                    items[bonus] = 0;
                 }
-                items[bonus] += 1
-            })
+                items[bonus] += 1;
+            });
             for (let item in items) {
                 if (text != "") {
-                    text += ", "
+                    text += ", ";
                 }
-                text = text + `${item} (${items[item]})`
+                text = text + `${item} (${items[item]})`;
             }
-            return text
+            return text;
         },
         removeItem(index) {
             // index is the index into cartContents, which is sorted by name.
@@ -192,7 +230,11 @@ export default {
             "getProducts",
             "getTotalPrice",
             "getSubtotal",
-            "getBundleDiscountAndBonus"
+            "getBundleDiscountAndBonus",
+            "getLineItemsForCheckout",
+            "getCheckoutPayload",
+            "getEndpoint",
+            "getOrderKey"
         ]),
         showDiscount: function() {
             return this.getBundleDiscountAndBonus.awards.length > 0;

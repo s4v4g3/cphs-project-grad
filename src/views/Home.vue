@@ -65,12 +65,7 @@ export default {
     }),
     created() {
         let products = this.getProducts
-        this.carouselItems = [
-            {
-                image: require("../assets/Donate_Button_Transparent3.jpg"),
-                link: "/DonateNow"
-            }
-        ];
+        this.carouselItems = [];
         products.forEach((product) => {
             this.carouselItems.push({
                 image: product.images[0],

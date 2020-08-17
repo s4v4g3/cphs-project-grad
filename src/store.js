@@ -4,6 +4,31 @@ import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+
+const SANDBOX_LOCATION_ID = 'L9Z61XZ30NKY3'
+const SANDBOX_CHECKOUT_URL = `https://connect.squareupsandbox.com/v2/locations/${SANDBOX_LOCATION_ID}/checkouts`
+
+const PRODUCTION_LOCATION_ID = '53E3BR1NS7ENT'
+const PRODUCTION_CHECKOUT_URL = `https://connect.squareup.com/v2/locations/${PRODUCTION_LOCATION_ID}/checkouts`
+
+const endpointMap = {
+    sandbox: {
+        locationId: SANDBOX_LOCATION_ID,
+        checkoutUrl: SANDBOX_CHECKOUT_URL
+    },
+    production: {
+        locationId: PRODUCTION_LOCATION_ID,
+        checkoutUrl: PRODUCTION_CHECKOUT_URL
+    }
+}
+
 function getProductPrice(state, cartItem) {
     window.console.log("state")
     window.console.log(state)
@@ -15,6 +40,17 @@ function getProductPrice(state, cartItem) {
         price = cartItem.selectedOptions[0].value
     }
     return price
+}
+
+function getProductOptions(cartItem) {
+    let opts = ""
+    cartItem.selectedOptions.forEach((option,i) => {
+        if (i>0) {
+            opts += ', '
+        }
+        opts += `${option.name}: ${option.value}`
+    })
+    return opts
 }
 
 function getProductName(state, pid) {
@@ -33,6 +69,55 @@ function getTotalPrice(state) {
     let subtotal = getSubtotal(state)
     let discount = getBundleDiscountAndBonus(state).discount
     return subtotal - discount
+}
+
+function getOrderId(orderKey) {
+    let orderIdStr = orderKey.substring(0, 8)
+    let orderId = parseInt(orderIdStr, 16)
+    return orderId.toString()
+}
+
+function getCheckoutPayload(state) {
+    
+    if (state.orderKey == null) {
+        state.orderKey = uuidv4()
+    }
+    let orderId = getOrderId(state.orderKey)
+    window.console.log(orderId)
+    let data = {
+        endpoint: state.endpoint,
+        squareUrl: endpointMap[state.endpoint].checkoutUrl,
+        body: {
+            idempotency_key: uuidv4(),
+            order: {
+                idempotency_key: state.orderKey,
+                order: {
+                    location_id: endpointMap[state.endpoint].locationId,
+                    line_items: getLineItemsForCheckout(state),
+                },
+            },
+            redirect_url: window.location.href + 'paymentConfirmation/' + state.orderKey, // will be overwritten
+            ask_for_shipping_address: false,
+            merchant_support_email: 'cphsprojgrad2021@gmail.com'
+        },
+    }
+    return data
+}
+
+function getLineItemsForCheckout(state) {
+    let items = []
+    //let award = getBundleDiscountAndBonus(state)
+    items = state.cartProducts.map(product => ({
+        name: getProductName(state, product.id),
+        quantity: "1",
+        base_price_money: {
+            amount: getProductPrice(state, product) * 100,
+            currency: "USD"
+        },
+        //catalog_object_id: product.id.toString(),
+        note: getProductOptions(product)
+    }))
+    return items
 }
 
 function getBundleDiscountAndBonus(state) {
@@ -76,7 +161,7 @@ function getBundleDiscountAndBonus(state) {
 
 export default new Vuex.Store({
     plugins: [createPersistedState(
-        {paths:["cartProducts"]}
+        {paths:["cartProducts", "pendingCheckout", "orderKey", "endpoint"]}
     )],
     state: {
         bundles: [
@@ -227,10 +312,13 @@ export default new Vuex.Store({
             },
         ],
 
+        orderKey: null,
         cartProducts: [],
         currentProduct: {},
         triggerProductAdded: false,
-        nameOfLastProductAdded: ''
+        nameOfLastProductAdded: '',
+        pendingCheckout: null,
+        endpoint: 'disabled'
     },
 
     getters: {
@@ -242,7 +330,12 @@ export default new Vuex.Store({
         getSubtotal: state => getSubtotal(state),
         getBundleDiscountAndBonus: state => getBundleDiscountAndBonus(state),
         onProductAdded: state => state.triggerProductAdded,
-        getNameOfLastProductAdded: state => state.nameOfLastProductAdded
+        getNameOfLastProductAdded: state => state.nameOfLastProductAdded,
+        getLineItemsForCheckout: state => getLineItemsForCheckout(state),
+        getCheckoutPayload: state => getCheckoutPayload(state),
+        getOrderKey: state => state.orderKey,
+        getPendingCheckout: state => state.pendingCheckout,
+        getEndpoint: state => state.endpoint
     },
 
     mutations: {
@@ -250,16 +343,32 @@ export default new Vuex.Store({
             state.cartProducts.push(product);
             state.triggerProductAdded = true
             state.nameOfLastProductAdded = getProductName(state, product.id)
+            if (state.cartProducts.length == 1) {
+                state.orderKey = uuidv4()
+            }
         },
         REMOVE_PRODUCT: (state, index) => {
             state.cartProducts.splice(index, 1);
+            if (state.cartProducts.length == 0) {
+                state.orderKey = null
+            }
         },
         CURRENT_PRODUCT: (state, product) => {
             state.currentProduct = product;
         },
         ACKNOWLEDGE_PRODUCT_ADDED: (state) => {
             state.triggerProductAdded = false
-        }
+        },
+        CLEAR_CART: (state) => {
+            state.cartProducts = []
+            state.orderKey = null
+        },
+        PENDING_CHECKOUT: (state, checkout) => {
+            state.pendingCheckout = checkout;
+        },
+        SET_ENDPOINT: (state, endpoint) => {
+            state.endpoint = endpoint;
+        },
     },
 
     actions: {
@@ -275,5 +384,14 @@ export default new Vuex.Store({
         acknowledgeProductAdded: (context) => {
             context.commit('ACKNOWLEDGE_PRODUCT_ADDED');
         },
+        clearCart: (context) => {
+            context.commit('CLEAR_CART');
+        },
+        setPendingCheckout: (context, checkout) => {
+            context.commit('PENDING_CHECKOUT', checkout);
+        },
+        setEndpoint: (context, endpoint) => {
+            context.commit('SET_ENDPOINT', endpoint);
+        }
     },
 });
