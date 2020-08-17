@@ -84,6 +84,7 @@ function getCheckoutPayload(state) {
     }
     let orderId = getOrderId(state.orderKey)
     window.console.log(orderId)
+    
     let data = {
         endpoint: state.endpoint,
         squareUrl: endpointMap[state.endpoint].checkoutUrl,
@@ -94,13 +95,32 @@ function getCheckoutPayload(state) {
                 order: {
                     location_id: endpointMap[state.endpoint].locationId,
                     line_items: getLineItemsForCheckout(state),
-                },
+                }
             },
             redirect_url: window.location.href + 'paymentConfirmation/' + state.orderKey, // will be overwritten
             ask_for_shipping_address: false,
             merchant_support_email: 'cphsprojgrad2021@gmail.com'
         },
     }
+    let award = getBundleDiscountAndBonus(state)
+    if (award.awards.length > 0) {
+        data.body.order.order.discounts = award.awards.map(award => ({
+            name: award.name,
+            amount_money: { amount: award.discount * 100, currency: "USD"}
+        }))
+    }
+    award.bonuses.forEach(bonus => {
+        data.body.order.order.line_items.push({
+            name: bonus,
+            quantity: "1",
+            base_price_money: {
+                amount: 0,
+                currency: "USD"
+            },
+            note: "Bonus Item"
+        })
+    })
+    
     return data
 }
 
@@ -166,10 +186,10 @@ export default new Vuex.Store({
     state: {
         bundles: [
             {
-                name: "Super Senior Tile Bonus",
+                name: "Super Senior Bundle",
                 items: [1000, 1003, 1005, 1006, 1001],
                 discount: 20,
-                bonus: 'Granite Coaster'
+                bonus: 'Bonus Granite Coaster'
             },
             {
                 name: "Senior Bundle",
@@ -292,7 +312,11 @@ export default new Vuex.Store({
                 price: 25,
                 images: [require("./assets/jersey.jpg")],
                 imageHeight: 400,
-                availableOptions: []
+                availableOptions: [{
+                    name: "Size",
+                    type: "Selection",
+                    options: ["S", "M", "L", "XL", "XXL", "XXXL"]
+                }]
             },
             {
                 id: 1008,

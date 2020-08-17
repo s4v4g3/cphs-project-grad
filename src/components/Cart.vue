@@ -94,6 +94,12 @@
                     <v-btn color="green darken-1" text @click="close()">Continue Shopping</v-btn>
                 </v-card-actions>
             </v-card>
+            <v-overlay :absolute="true" :value="showOverlay">
+                <v-btn color="success">
+                    Taking you to the Secure Checkout Page...
+                    <v-progress-circular indeterminate color="red"></v-progress-circular>
+                </v-btn>
+            </v-overlay>
         </v-dialog>
         <v-dialog v-model="showCheckoutDisabledMessage" max-width="320">
             <v-card>
@@ -120,13 +126,14 @@ export default {
     components: {},
     data: () => ({
         displayed: false,
-        showCheckoutDisabledMessage: false
+        showCheckoutDisabledMessage: false,
+        showOverlay: false
     }),
     created() {},
     mounted() {
         window.console.log("Cart mounted!");
         this.displayed = this.value;
-        window.console.log(this.$router)
+        window.console.log(this.$router);
     },
     watch: {
         value: function(newValue) {
@@ -137,17 +144,22 @@ export default {
     methods: {
         ...mapActions(["addProduct", "removeProduct", "setPendingCheckout"]),
         checkout() {
-            let currentUrl = window.location.href
-            let routerPath = this.$router.currentRoute.fullPath
-            let redirectUrlBase = currentUrl.substring(0, currentUrl.length - routerPath.length)
-            let redirectUrl = redirectUrlBase + "/paymentConfirmation/" + this.getOrderKey
-            window.console.log(this.$router)
             if (this.getEndpoint == "disabled") {
                 this.showCheckoutDisabledMessage = true;
                 return;
             }
             let checkoutPayload = this.getCheckoutPayload;
-            checkoutPayload.body.redirect_url = redirectUrl
+            // replace redirect_url in checkout payload
+            let currentUrl = window.location.href;
+            let routerPath = this.$router.currentRoute.fullPath;
+            let redirectUrlBase = currentUrl.substring(
+                0,
+                currentUrl.length - routerPath.length
+            );
+            let redirectUrl =
+                redirectUrlBase + "/paymentConfirmation/" + this.getOrderKey;
+            checkoutPayload.body.redirect_url = redirectUrl;
+
             window.console.log("checkout!");
             window.console.log(checkoutPayload);
             window.console.log(checkoutPayload.body.order.order.id);
@@ -162,8 +174,13 @@ export default {
 
                     window.console.log(checkoutResult.checkout_page_url);
 
-                    // Navigate to checkout URL
-                    window.location = checkoutResult.checkout_page_url;
+                    this.showOverlay = true;
+
+                    setTimeout(() => {
+                        this.showOverlay = false;
+                        // Navigate to checkout URL
+                        window.location = checkoutResult.checkout_page_url;
+                    }, 2500);
                 })
                 .catch(err => {
                     // TODO: handle error

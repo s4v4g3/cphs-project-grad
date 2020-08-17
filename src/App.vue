@@ -64,16 +64,6 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link to="/DonateNow">
-                    <v-list-item-icon>
-                        <v-icon>mdi-cash-usd</v-icon>
-                    </v-list-item-icon>
-
-                    <v-list-item-content>
-                        <v-list-item-title>Donate Now!</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
                 <v-list-item link to="/SeniorSwag">
                     <v-list-item-icon>
                         <v-icon>mdi-gift-outline</v-icon>
@@ -112,21 +102,25 @@
         </v-app-bar>
 
         <v-content>
-            <v-snackbar v-model="snackbar" :timeout="4000" :top="true">{{nameOfLastProductAdded}} Added to Cart!</v-snackbar>
+            <v-snackbar
+                color="success"
+                v-model="snackbar"
+                :timeout="4000"
+                :top="true"
+            >{{nameOfLastProductAdded}} Added to Cart!</v-snackbar>
             <router-view></router-view>
         </v-content>
 
         <v-footer app>
             <span>&copy; 2020</span>
         </v-footer>
-        
-        <cart v-model="showCart" />
 
+        <cart v-model="showCart" />
     </v-app>
 </template>
 <script>
 import btn from "./components/Btn";
-import cart from "./components/Cart"
+import cart from "./components/Cart";
 import { mapGetters, mapActions } from "vuex";
 export default {
     name: "App",
@@ -155,10 +149,10 @@ export default {
     }),
     watch: {
         productAdded: function(newValue) {
-            window.console.log("watch productAdded!")
+            window.console.log("watch productAdded!");
             if (newValue) {
-                this.snackbar = true
-                this.acknowledgeProductAdded()
+                this.snackbar = true;
+                this.acknowledgeProductAdded();
             }
         }
     },
@@ -171,23 +165,29 @@ export default {
             window.console.log("showPopupCart!");
             this.showCart = true;
             this.getProductsInCart.forEach(item => {
-                let product = this.getProducts.find(product => product.id == item.id)
-                window.console.log(product.name)
+                let product = this.getProducts.find(
+                    product => product.id == item.id
+                );
+                window.console.log(product.name);
                 item.selectedOptions.forEach(opt => {
-                    window.console.log(`${opt.name}: ${opt.value}`)
-                })
-                
-            })
+                    window.console.log(`${opt.name}: ${opt.value}`);
+                });
+            });
         }
-        
     },
     computed: {
-        ...mapGetters(["getProductsInCart", "getPopupCart", "getProducts", "onProductAdded", "getNameOfLastProductAdded"]),
+        ...mapGetters([
+            "getProductsInCart",
+            "getPopupCart",
+            "getProducts",
+            "onProductAdded",
+            "getNameOfLastProductAdded"
+        ]),
         productAdded: function() {
-            return this.onProductAdded
+            return this.onProductAdded;
         },
         nameOfLastProductAdded: function() {
-            return this.getNameOfLastProductAdded
+            return this.getNameOfLastProductAdded;
         }
     }
 };

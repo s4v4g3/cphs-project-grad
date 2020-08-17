@@ -1,26 +1,38 @@
 <template>
     <v-container fluid class="text-center">
-        <v-card>
-            <v-row v-if="transactionSuccess" class="text-center">
+        <v-card v-if="transactionSuccess">
+            <v-row  class="text-center">
                 <v-col cols="12">
-                    <h1>Order Key</h1>
-                    {{this.orderKey}}
+                    <h1>
+                        <v-icon large>mdi-check-circle</v-icon>Your Order was Placed Successfully
+                    </h1>
                 </v-col>
-                <v-col cols="12">
-                    <h1>Checkout Id</h1>
-                    {{this.checkoutId}}
+                <v-col offset="2" cols="8">
+                    <p>
+                        Thank you for your order. An email confirmation will be sent to the address specified at checkout.
+                        If you have questions about your order, please contact us at
+                        <a href="mailto:cphsprojgrad2021@gmail.com">cphsprojgrad2021@gmail.com</a>
+                    </p>
                 </v-col>
-                <v-col cols="12">
-                    <h1>Transaction Id</h1>
-                    {{this.transactionId}}
+                <v-col offset="2" cols="8">
+                    <v-btn to="/">Back to Home</v-btn>
                 </v-col>
             </v-row>
+            <br />
+            <br />
+            <br />
+            <br />
             <v-row>
-                <v-col class="mb-4"></v-col>
-                <v-col class="mb-4"></v-col>
-                <v-col class="mb-4"></v-col>
+                <v-col offset="2" cols="8">
+                    Your transaction ID is
+                    <code>{{this.transactionId}}</code>
+                </v-col>
             </v-row>
         </v-card>
+        <v-card v-else>
+        <v-col offset="2" cols="8">
+                    <v-btn to="/">Back to Home</v-btn>
+                </v-col></v-card>
     </v-container>
 </template>
 <script>
@@ -45,9 +57,8 @@ export default {
         ) {
             this.transactionSuccess = true;
 
-            this.clearCart()
-            this.setPendingCheckout(null)
-
+            this.clearCart();
+            this.setPendingCheckout(null);
         } else {
             this.transactionSuccess = false;
         }
