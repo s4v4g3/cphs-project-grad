@@ -98,7 +98,7 @@ function getCheckoutPayload(state) {
                 }
             },
             redirect_url: window.location.href + 'paymentConfirmation/' + state.orderKey, // will be overwritten
-            ask_for_shipping_address: false,
+            ask_for_shipping_address: true,
             merchant_support_email: 'cphsprojgrad2021@gmail.com'
         },
     }
