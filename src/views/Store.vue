@@ -4,25 +4,34 @@
             <v-col class="mb-4" cols="12">
                 <v-container>
                     <v-card>
-                        <h2 class="display-2 mb-2">Bundles</h2>
+                        <v-app-bar large dark color="success">Bundle Savings</v-app-bar>
+                        <v-card class="px-6" >
                         <v-row class="text-center">
-                            <v-col class="mb-4"  offset="1" cols="4">
-                                <v-card>
-                                    <v-card-title>
-                                        <span class="headline">Senior Bundle - $50</span>
-                                    </v-card-title>
-                                    <v-card-text>Get a T-Shirt, Yard Sign, Face Mask, and Gaiter and Save $20! <br> (discount applied at checkout)</v-card-text>
+                            <v-col cols="12">
+                                <v-card  :elevation="10" >
+                                    <v-card-title  class="headline">Senior Bundle</v-card-title>
+
+                                    <h3 >Get a T-Shirt, Yard Sign, Face Mask, and Gaiter for $50!</h3>
+
+                                    <v-card-actions>
+                                        <v-btn text>$20 Savings!</v-btn>
+                                    </v-card-actions>
                                 </v-card>
                             </v-col>
-                            <v-col class="mb-4" offset="2" cols="4">
-                                <v-card>
-                                    <v-card-title>
-                                        <span class="headline">Super Senior Bundle - $100</span>
-                                    </v-card-title>
-                                    <v-card-text>Get a T-Shirt, Yard Sign, Face Mask, Gaiter, and Commemorative Brick -- Save $20 and get a free replica coaster made of granite!<br> (discount applied at checkout)</v-card-text>
+                            <v-col cols="12">
+                                <v-card  :elevation="10" >
+                                    <v-card-title class="headline">Super Senior Bundle</v-card-title>
+
+                                    <h3> Get a T-Shirt, Yard Sign, Face Mask, Gaiter, and Commemorative Brick for $100 </h3>
+                                    <h3> and get a Free Granite Coaster! </h3>
+
+                                    <v-card-actions>
+                                        <v-btn text>$20 Savings + Bonus Coaster</v-btn>
+                                    </v-card-actions>
                                 </v-card>
                             </v-col>
                         </v-row>
+                        </v-card>
                     </v-card>
                 </v-container>
             </v-col>
