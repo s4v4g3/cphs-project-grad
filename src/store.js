@@ -342,7 +342,7 @@ export default new Vuex.Store({
         triggerProductAdded: false,
         nameOfLastProductAdded: '',
         pendingCheckout: null,
-        endpoint: 'disabled'
+        endpoint: 'production'
     },
 
     getters: {

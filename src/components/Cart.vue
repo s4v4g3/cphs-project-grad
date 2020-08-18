@@ -129,7 +129,11 @@ export default {
         showCheckoutDisabledMessage: false,
         showOverlay: false
     }),
-    created() {},
+    created() {
+        if (this.getEndpoint == "disabled") {
+            this.setEndpoint("production")
+        }
+    },
     mounted() {
         window.console.log("Cart mounted!");
         this.displayed = this.value;
@@ -142,9 +146,10 @@ export default {
         }
     },
     methods: {
-        ...mapActions(["addProduct", "removeProduct", "setPendingCheckout"]),
+        ...mapActions(["addProduct", "removeProduct", "setPendingCheckout", "setEndpoint"]),
         checkout() {
             if (this.getEndpoint == "disabled") {
+
                 this.showCheckoutDisabledMessage = true;
                 return;
             }
