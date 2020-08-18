@@ -12,6 +12,7 @@
                                     <v-card-title  class="headline">Senior Bundle</v-card-title>
 
                                     <h3 >Get a T-Shirt, Yard Sign, Face Mask, and Gaiter for $50!</h3>
+                                    <v-card-subtitle> (Discount Applied at Checkout)</v-card-subtitle>
 
                                     <v-card-actions>
                                         <v-btn text>$20 Savings!</v-btn>
@@ -24,7 +25,7 @@
 
                                     <h3> Get a T-Shirt, Yard Sign, Face Mask, Gaiter, and Commemorative Brick for $100 </h3>
                                     <h3> and get a Free Granite Coaster! </h3>
-
+                                    <v-card-subtitle> (Discount Applied at Checkout)</v-card-subtitle>
                                     <v-card-actions>
                                         <v-btn text>$20 Savings + Bonus Coaster</v-btn>
                                     </v-card-actions>
