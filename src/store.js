@@ -124,10 +124,18 @@ function getCheckoutPayload(state) {
     return data
 }
 
+/*
+function getItemMetadata(cartItem) {
+    let metadata = {}
+    cartItem.selectedOptions.forEach((option) => {
+        metadata[option.name] = `${option.value}`
+    })
+    return metadata
+}
+*/
+
 function getLineItemsForCheckout(state) {
-    let items = []
-    //let award = getBundleDiscountAndBonus(state)
-    items = state.cartProducts.map(product => ({
+    let items = state.cartProducts.map(product => ({
         name: getProductName(state, product.id),
         quantity: "1",
         base_price_money: {
@@ -135,7 +143,8 @@ function getLineItemsForCheckout(state) {
             currency: "USD"
         },
         //catalog_object_id: product.id.toString(),
-        note: getProductOptions(product)
+        note: getProductOptions(product),
+        //metadata: getItemMetadata(product)
     }))
     return items
 }
@@ -204,7 +213,7 @@ export default new Vuex.Store({
                 id: 1000,
                 name: 't-shirt',
                 displayName: "Senior T-Shirt",
-                caption: "Available in White, Teal, Grey, Pink, and Timberwolf Green",
+                caption: "Available in White, Teal, Grey, Pink, and Green.  That's right. Plain ol' Green.",
                 price: 25,
                 images: [
                     require("./assets/white_t_shirt.png"),
@@ -310,7 +319,7 @@ export default new Vuex.Store({
                 displayName: "Senior Jersey",
                 caption: "Only available until 8/25/2020!",
                 price: 25,
-                images: [require("./assets/jersey.jpg")],
+                images: [require("./assets/jersey.jpg"), require("./assets/jersey_sizing.jpg")],
                 imageHeight: 400,
                 availableOptions: [{
                     name: "Size",
