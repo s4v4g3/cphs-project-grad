@@ -32,6 +32,7 @@
                     <customers />
                 </div>
                 <div v-if="tab==1">
+                    <orders />
                 </div>
                 <div v-if="tab==2">
                 </div>
@@ -43,10 +44,11 @@
 import { mapActions, mapGetters } from "vuex";
 import { queryDb } from "../backend";
 import customers from "../components/reports/Customers"
+import orders from "../components/reports/Orders"
 
 export default {
     name: "Reports",
-    components: { customers},
+    components: { customers, orders},
     data: () => ({
         credentialsVerified: false,
         credentials: {

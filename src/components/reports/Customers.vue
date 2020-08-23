@@ -1,25 +1,33 @@
 <template>
     <v-container>
         <v-btn @click="refresh()">Refresh Data</v-btn>
-        <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-        ></v-text-field>
+        <br />
         <v-data-table
             :headers="headers"
             :items="customers"
             :search="search"
             show-expand
-            class="elevation-1"
+            class="elevation-1 ma-2"
         >
+            <template v-slot:top>
+                <v-toolbar flat>
+                    <v-toolbar-title>Customers</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                        v-model="search"
+                        append-icon="mdi-magnify"
+                        label="Search"
+                        single-line
+                        hide-details
+                    ></v-text-field>
+                </v-toolbar>
+            </template>
             <template v-slot:item.orders="{ item }">{{ item.orders.length }}</template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
                     <v-card class="ma-4" v-for="(order,i) in item.orders" :key="i">
                         <v-card-title>Order on {{(new Date(order.closed_at)).toString('en-US')}}</v-card-title>
+                        <v-card-subtitle class="text-left"><v-btn text>${{order.total_money.amount/100}}.00</v-btn></v-card-subtitle>
                         <v-simple-table>
                             <template v-slot:default>
                                 <thead>
@@ -30,10 +38,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="text-left" v-for="(lineItem,j) in order.items" :key="j">
+                                    <tr
+                                        class="text-left"
+                                        v-for="(lineItem,j) in order.items"
+                                        :key="j"
+                                    >
                                         <td>{{ lineItem.name }}</td>
                                         <td>1</td>
-                                        <td><div v-for="(option,k) in lineItem.options" :key="k">{{option.option}}: {{option.value}}<br></div></td>
+                                        <td>
+                                            <div v-for="(option,k) in lineItem.options" :key="k">
+                                                {{option.option}}: {{option.value}}
+                                                <br />
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </template>
@@ -55,10 +72,10 @@ export default {
         customers: [],
         search: null,
         headers: [
-            { text: "E-mail", value: "email_address" },
             { text: "Last Name", value: "family_name" },
             { text: "First Name", value: "given_name" },
             { text: "Phone", value: "phone_number" },
+            { text: "E-mail", value: "email_address" },
             { text: "Number of Orders", value: "orders" }
         ]
     }),
