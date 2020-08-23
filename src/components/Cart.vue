@@ -119,7 +119,8 @@
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
-import doCheckout from "../checkout";
+import { doCheckout } from "../backend";
+
 export default {
     name: "cart",
     props: ["value"],
@@ -127,7 +128,7 @@ export default {
     data: () => ({
         displayed: false,
         showCheckoutDisabledMessage: false,
-        showOverlay: false
+        showOverlay: false,
     }),
     created() {
         if (this.getEndpoint == "disabled") {

@@ -5,11 +5,11 @@ import createPersistedState from "vuex-persistedstate";
 Vue.use(Vuex);
 
 function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
     });
-  }
+}
 
 
 const SANDBOX_LOCATION_ID = 'L9Z61XZ30NKY3'
@@ -44,8 +44,8 @@ function getProductPrice(state, cartItem) {
 
 function getProductOptions(cartItem) {
     let opts = ""
-    cartItem.selectedOptions.forEach((option,i) => {
-        if (i>0) {
+    cartItem.selectedOptions.forEach((option, i) => {
+        if (i > 0) {
             opts += ', '
         }
         opts += `${option.name}: ${option.value}`
@@ -78,13 +78,13 @@ function getOrderId(orderKey) {
 }
 
 function getCheckoutPayload(state) {
-    
+
     if (state.orderKey == null) {
         state.orderKey = uuidv4()
     }
     let orderId = getOrderId(state.orderKey)
     window.console.log(orderId)
-    
+
     let data = {
         endpoint: state.endpoint,
         squareUrl: endpointMap[state.endpoint].checkoutUrl,
@@ -106,7 +106,7 @@ function getCheckoutPayload(state) {
     if (award.awards.length > 0) {
         data.body.order.order.discounts = award.awards.map(award => ({
             name: award.name,
-            amount_money: { amount: award.discount * 100, currency: "USD"}
+            amount_money: { amount: award.discount * 100, currency: "USD" }
         }))
     }
     award.bonuses.forEach(bonus => {
@@ -120,7 +120,7 @@ function getCheckoutPayload(state) {
             note: "Bonus Item"
         })
     })
-    
+
     return data
 }
 
@@ -150,16 +150,16 @@ function getLineItemsForCheckout(state) {
 }
 
 function getBundleDiscountAndBonus(state) {
-    
+
     let discount = 0
     let bonuses = []
     let awards = []
     let cartItemIds = state.cartProducts.map(item => item.id)
     let bundleFound = true
-    while(bundleFound) {
+    while (bundleFound) {
         bundleFound = false
 
-        for (let i=0; i<state.bundles.length; ++i) {
+        for (let i = 0; i < state.bundles.length; ++i) {
             let bundle = state.bundles[i];
             if (bundle.items.every(elem => cartItemIds.indexOf(elem) > -1)) {
                 bundleFound = true
@@ -169,13 +169,13 @@ function getBundleDiscountAndBonus(state) {
                     name: bundle.name
                 })
                 discount += bundle.discount
-                if (bundle.bonus != null)  bonuses.push(bundle.bonus)
+                if (bundle.bonus != null) bonuses.push(bundle.bonus)
                 // remove items from cartItemIds
                 bundle.items.forEach(item => {
                     const index = cartItemIds.indexOf(item)
                     cartItemIds.splice(index, 1)
                 })
-                break 
+                break
             }
         }
         if (!bundleFound) { break }
@@ -190,7 +190,7 @@ function getBundleDiscountAndBonus(state) {
 
 export default new Vuex.Store({
     plugins: [createPersistedState(
-        {paths:["cartProducts", "pendingCheckout", "orderKey", "endpoint"]}
+        { paths: ["cartProducts", "pendingCheckout", "orderKey", "endpoint", "reportCredentials", "reportCollections"] }
     )],
     state: {
         bundles: [
@@ -206,7 +206,7 @@ export default new Vuex.Store({
                 discount: 20,
                 bonus: null
             }
-            
+
         ],
         products: [
             {
@@ -340,7 +340,7 @@ export default new Vuex.Store({
                     type: "NumericSlider",
                     min: 5,
                     max: 5000,
-                    options: [20,50,100,250,500,1000]
+                    options: [20, 50, 100, 250, 500, 1000]
                 }]
             },
         ],
@@ -351,7 +351,14 @@ export default new Vuex.Store({
         triggerProductAdded: false,
         nameOfLastProductAdded: '',
         pendingCheckout: null,
-        endpoint: 'production'
+        endpoint: 'production',
+        reportCredentials: null,
+        reportCollections: {
+            customers: [],
+            reports: [],
+            transactions: [],
+            orders: []
+        }
     },
 
     getters: {
@@ -368,7 +375,9 @@ export default new Vuex.Store({
         getCheckoutPayload: state => getCheckoutPayload(state),
         getOrderKey: state => state.orderKey,
         getPendingCheckout: state => state.pendingCheckout,
-        getEndpoint: state => state.endpoint
+        getEndpoint: state => state.endpoint,
+        getReportCredentials: state => state.reportCredentials,
+        getReportCollections: state => state.reportCollections,
     },
 
     mutations: {
@@ -402,6 +411,12 @@ export default new Vuex.Store({
         SET_ENDPOINT: (state, endpoint) => {
             state.endpoint = endpoint;
         },
+        SET_REPORT_CREDENTIALS: (state, credentials) => {
+            state.reportCredentials = credentials;
+        },
+        SET_REPORT_COLLECTIONS: (state, reportCollections) => {
+            state.reportCollections = reportCollections;
+        }
     },
 
     actions: {
@@ -425,6 +440,12 @@ export default new Vuex.Store({
         },
         setEndpoint: (context, endpoint) => {
             context.commit('SET_ENDPOINT', endpoint);
+        },
+        setReportCredentials: (context, credentials) => {
+            context.commit('SET_REPORT_CREDENTIALS', credentials);
+        },
+        setReportCollections: (context, reportCollections) => {
+            context.commit('SET_REPORT_COLLECTIONS', reportCollections);
         }
     },
 });
