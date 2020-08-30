@@ -25,6 +25,7 @@
             <v-tabs fixed-tabs v-model="tab" background-color="green" dark>
                 <v-tab>Orders by Customer</v-tab>
                 <v-tab>Transactions</v-tab>
+                <v-tab>Items</v-tab>
                 <v-tab>Reports</v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
@@ -35,6 +36,9 @@
                     <orders />
                 </div>
                 <div v-if="tab==2">
+                    <items />
+                </div>
+                <div v-if="tab==3">
                 </div>
             </v-tabs-items>
         </div>
@@ -45,10 +49,11 @@ import { mapActions, mapGetters } from "vuex";
 import { queryDb } from "../backend";
 import customers from "../components/reports/Customers"
 import orders from "../components/reports/Orders"
+import items from "../components/reports/Items"
 
 export default {
     name: "Reports",
-    components: { customers, orders},
+    components: { customers, orders, items},
     data: () => ({
         credentialsVerified: false,
         credentials: {
