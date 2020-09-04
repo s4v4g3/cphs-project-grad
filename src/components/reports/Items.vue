@@ -90,7 +90,6 @@ export default {
             customers.forEach(customer => {
                 customersById[customer.id] = customer;
             });
-            window.console.log(customersById);
             orders.forEach(order => {
                 window.console.log(order.customer_id);
 
@@ -128,7 +127,6 @@ export default {
             if (optString.includes("Text Line 1")) {
                 let re = /Text Line 1: (.*), Text Line 2: (.*), Text Line 3: (.*)/g
                 let res = re.exec(optString)
-                window.console.log(res)
                 return [res[1], res[2], res[3]]
             } else {
                 return optString.split(',')

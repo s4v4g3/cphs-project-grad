@@ -3,7 +3,7 @@
         <v-row class="text-center">
             <v-col class="mb-4" cols="12">
                 <v-container>
-                    <v-card>
+                    <v-card v-if="false">
                         <v-app-bar large dark color="success">Bundle Savings</v-app-bar>
                         <v-card class="px-6" >
                         <v-row class="text-center">
@@ -58,10 +58,11 @@ export default {
     created() {
         this.items = [
             {
-                product: this.getProductByName("t-shirt")
-            },
-            {
                 product: this.getProductByName("brick")
+            },
+            /*
+            {
+                product: this.getProductByName("t-shirt")
             },
             {
                 product: this.getProductByName("yardsign")
@@ -78,6 +79,7 @@ export default {
             {
                 product: this.getProductByName("jersey")
             },
+            */
             {
                 product: this.getProductByName("donation")
             }

@@ -193,6 +193,7 @@ export default new Vuex.Store({
         { paths: ["cartProducts", "pendingCheckout", "orderKey", "endpoint", "reportCredentials", "reportCollections"] }
     )],
     state: {
+        /*
         bundles: [
             {
                 name: "Super Senior Bundle",
@@ -208,7 +209,10 @@ export default new Vuex.Store({
             }
 
         ],
+        */
+        bundles: [],
         products: [
+            /*
             {
                 id: 1000,
                 name: 't-shirt',
@@ -236,6 +240,7 @@ export default new Vuex.Store({
                     }
                 ]
             },
+            */
             {
                 id: 1001,
                 name: 'brick',
@@ -263,6 +268,7 @@ export default new Vuex.Store({
                     }
                 ]
             },
+            /*
             {
                 id: 1003,
                 name: 'yardsign',
@@ -327,6 +333,7 @@ export default new Vuex.Store({
                     options: ["S", "M", "L", "XL", "XXL", "XXXL"]
                 }]
             },
+            */
             {
                 id: 1008,
                 name: 'donation',
