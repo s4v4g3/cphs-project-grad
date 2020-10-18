@@ -57,10 +57,10 @@ export default {
     }),
     created() {
         this.items = [
+            /*
             {
                 product: this.getProductByName("brick")
             },
-            /*
             {
                 product: this.getProductByName("t-shirt")
             },

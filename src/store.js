@@ -241,6 +241,7 @@ export default new Vuex.Store({
                 ]
             },
             */
+           /*
             {
                 id: 1001,
                 name: 'brick',
@@ -268,6 +269,7 @@ export default new Vuex.Store({
                     }
                 ]
             },
+            */
             /*
             {
                 id: 1003,
