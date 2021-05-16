@@ -44,13 +44,23 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link to="/becomeASponsor">
+                <v-list-item link to="/MissionStatement">
                     <v-list-item-icon>
-                        <v-icon>mdi-charity</v-icon>
+                        <v-icon>mdi-file-document</v-icon>
                     </v-list-item-icon>
 
                     <v-list-item-content>
-                        <v-list-item-title>Become a Sponsor</v-list-item-title>
+                        <v-list-item-title>Mission Statement</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item link to="/History">
+                    <v-list-item-icon>
+                        <v-icon>mdi-history</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>History</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -64,15 +74,19 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link to="/SeniorSwag">
+                <v-list-item link to="/becomeASponsor">
                     <v-list-item-icon>
-                        <v-icon>mdi-gift-outline</v-icon>
+                        <v-icon>mdi-charity</v-icon>
                     </v-list-item-icon>
 
                     <v-list-item-content>
-                        <v-list-item-title>Senior 2021 Swag</v-list-item-title>
+                        <v-list-item-title>Become a Sponsor</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+
+                
+
+                
             </v-list>
         </v-navigation-drawer>
 

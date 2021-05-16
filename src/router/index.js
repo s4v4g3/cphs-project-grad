@@ -51,6 +51,30 @@ const routes = [
         component: () => import(/* webpackChunkName: "store" */ '../views/Reports.vue')
     },
     {
+        path: '/MissionStatement',
+        name: 'MissionStatement',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "store" */ '../views/MissionStatement.vue')
+    },
+    {
+        path: '/History',
+        name: 'History',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "store" */ '../views/History.vue')
+    },
+    {
+        path: '/2021Sponsors',
+        name: 'Sponsors',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "store" */ '../views/Sponsors.vue')
+    },
+    {
         path: '*', redirect: '/'
     },
 ]
