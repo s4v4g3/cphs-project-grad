@@ -74,7 +74,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link to="/becomeASponsor">
+                <v-list-item link to="/BecomeASponsor">
                     <v-list-item-icon>
                         <v-icon>mdi-charity</v-icon>
                     </v-list-item-icon>

@@ -12,7 +12,7 @@
                 </v-col>
             </v-row>
             <v-row>
-                <v-col class="mb-4">
+                <v-col class="ma-4">
                     <h1 class="display-2 mb-3">Mission Statement</h1>
                     <br />
                     <p

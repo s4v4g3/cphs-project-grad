@@ -55,7 +55,7 @@ export default {
             },
             {
                 text: "Become a Sponsor",
-                href: "/becomeASponsor"
+                href: "/BecomeASponsor"
             },
             {
                 text: "2021 Sponsors",
