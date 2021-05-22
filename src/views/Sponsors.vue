@@ -57,10 +57,19 @@ export default {
     components: {},
     data: () => ({
         sponsors: [
+            
             {
-                name: "Nicole Beailieu",
+                name: "Mojo Coffee",
                 subtitle: "",
-                image: require("@/assets/nicole_bjpg.jpg"),
+                image: require("@/assets/mojo.png"),
+                link: "http://mojodrivethru.com/",
+                containImage: true
+            },
+            {
+                name: "Mungia Real Estate",
+                subtitle: "mungiarealestate.com",
+                image: require("@/assets/mungia_real_estate.jpg"),
+                link: "https://www.mungiarealestate.com/",
                 containImage: false
             },
             {
@@ -69,6 +78,25 @@ export default {
                 image: require("@/assets/mr_b_tutoring.png"),
                 link: "mailto:rhois.002378@sbcglobal.net",
                 containImage: true
+            },
+            
+            {
+                name: "Townsley Designs",
+                subtitle: "",
+                image: require("@/assets/townsley.jpg"),
+                containImage: true
+            },
+            {
+                name: "Dr. Seth Briggs, D.D.S.",
+                subtitle: "Austin Orthodontics",
+                image: require("@/assets/austin_orthodontics.jpg"),
+                containImage: true
+            },
+            {
+                name: "Nicole Beailieu",
+                subtitle: "",
+                image: require("@/assets/nicole_bjpg.jpg"),
+                containImage: false
             },
             {
                 name: "Marc Digby",
@@ -83,16 +111,15 @@ export default {
                 containImage: true
             },
             {
+                name: "Regina Gonzalez",
+                subtitle: "",
+                image: require("@/assets/gary_guynes.gif"),
+                containImage: true
+            },
+            {
                 name: "Dale McPherson",
                 subtitle: "",
                 image: require("@/assets/dale_mcpherson.jpg"),
-                containImage: false
-            },
-            {
-                name: "Mungia Real Estate",
-                subtitle: "mungiarealestate.com",
-                image: require("@/assets/mungia_real_estate.jpg"),
-                link: "https://www.mungiarealestate.com/",
                 containImage: false
             },
             {
@@ -109,6 +136,37 @@ export default {
                     subtitle: "rudysbbq.com",
                 image: require("@/assets/rudys.png"),
                 link: "https://rudysbbq.com/",
+                containImage: true
+            },
+            {
+                name:
+                    "Bush's Chicken",
+                    subtitle: "www.bushschicken.com",
+                image: require("@/assets/bushs.png"),
+                link: "http://www.bushschicken.com/",
+                containImage: true
+            },
+            {
+                name:
+                    "Firehouse Subs",
+                    subtitle: "firehousesubs.com",
+                image: require("@/assets/Firehouse_Subs_logo.png"),
+                link: "http://www.firehousesubs.com/",
+                containImage: true
+            },
+            {
+                name:
+                    "Mighty Fine",
+                    subtitle: "www.mightyfineburgers.com",
+                image: require("@/assets/Website-MightyFineLogo_vector.png"),
+                link: "https://www.mightyfineburgers.com/",
+                containImage: true
+            },
+            {
+                name:
+                    "Tony C's",
+                    subtitle: "",
+                image: require("@/assets/tonycs.png"),
                 containImage: true
             },
         ],
